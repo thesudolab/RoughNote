@@ -1,0 +1,50 @@
+11: Information Gathering
+* Nmap
+* Zenmap
+* Stealth scan
+* dmitry
+* maltego
+12: Vulnerability Analysis & Web Application Analysis
+* Vulnerability Analysis:
+    * Powerfuzzer
+    * Sfuzz
+* Web Application Analysis:
+    * Webscarab
+    * Nikto
+13: Database Assessment
+* sqlmap
+* Sqlninja
+14: Password Attacks
+* John the Ripper
+* Ophcrack
+* L0phtCrack
+* THC Hydra
+* Medusa
+15: Exploitation Tools & Sniffing and Spoofing
+* Exploitation Tools:
+    * Metasploit
+    * Searchsploit
+    * Termite
+* Sniffing and Spoofing:
+    * Wireshark
+    * Ettercap/Seltercap
+    * Driftnet
+16: Post Exploitation & Forensics
+* Post Exploitation:
+    * RAT
+    * Powershell Empire
+    * Weevely
+* Forensics:
+    * Autopsy
+    * Binwalk
+    * Galleta
+    * Hashdeep
+17: Reporting Tools & Social Engineering
+* Reporting Tools:
+    * Dradis
+    * Faraday IDE
+    * Magictree
+* Social Engineering:
+    * Ghost Phisher
+    * msf payload creator
+    * SET (social engineering toolkit)
