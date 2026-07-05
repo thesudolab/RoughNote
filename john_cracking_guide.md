@@ -1,10 +1,11 @@
 cat << 'EOF' > ~/john_cracking_guide.md
-# JOHN THE RIPPER: LIVE HASH CRACKING CHEATSHEET
+# JOHN THE RIPPER: LIVE HASH CRACKING CHEATSHEET (BASH VERSION)
 
-## STEP 1: GENERATE THE SALTED HASH
-Create a salted SHA-512 hash for the password "P@ssword123!":
+## STEP 1: GENERATE THE SALTED HASH (NATIVE BASH)
+Generate a random 8-character salt and create a SHA-512 crypt ($6$) hash:
 
-python3 -c "import crypt; print(f'victim_user:{crypt.crypt(\"P@ssword123!\", crypt.mksalt(crypt.METHOD_SHA512))}')" > my_test_hash.txt
+SALT=$(openssl rand -base64 8 | tr -d '+/=' | cut -c1-8)
+echo "victim_user:$(openssl passwd -6 -salt "$SALT" 'P@ssword123!')" > my_test_hash.txt
 
 ## STEP 2: CREATE THE BASE WORDLIST
 Create a basic, lowercase dictionary file:
