@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wifite for WPA/WPA2 – Structured Notes</title>
+    <style>
+        /* --- Reset & Base --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f4f6f9;
+            color: #1e2a3a;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .document-wrapper {
+            max-width: 1100px;
+            width: 100%;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            border-radius: 12px;
+            padding: 50px 65px;
+            line-height: 1.6;
+        }
+
+        /* --- Print Styles --- */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .document-wrapper {
+                box-shadow: none;
+                border-radius: 0;
+                padding: 40px 60px;
+                max-width: 100%;
+            }
+            .command-block {
+                background: #f0f4f8 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .badge {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .toc {
+                background: #f8fafc !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .method-card {
+                background: #f1f5f9 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+            .section {
+                page-break-inside: avoid;
+            }
+            .summary-table th {
+                background: #1e293b !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        /* --- Typography --- */
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #0b1e33;
+            border-bottom: 4px solid #2563eb;
+            padding-bottom: 12px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            color: #4b5a6b;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            color: #1e3a5f;
+            border-left: 6px solid #2563eb;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 28px;
+            margin-bottom: 10px;
+            color: #2d4a7a;
+        }
+        p {
+            margin-bottom: 14px;
+            color: #2d3748;
+        }
+        ul, ol {
+            margin-left: 28px;
+            margin-bottom: 18px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+
+        /* --- Legal Disclaimer --- */
+        .legal-box {
+            background: #fef2f2;
+            border-left: 6px solid #dc2626;
+            padding: 18px 24px;
+            border-radius: 6px;
+            margin: 30px 0;
+            font-size: 0.95rem;
+        }
+        .legal-box strong {
+            color: #991b1b;
+        }
+
+        /* --- Table of Contents --- */
+        .toc {
+            background: #f8fafc;
+            padding: 24px 30px;
+            border-radius: 10px;
+            margin: 30px 0 20px 0;
+            border: 1px solid #e2e8f0;
+        }
+        .toc h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+            font-size: 1.6rem;
+        }
+        .toc-grid {
+            columns: 2;
+            column-gap: 40px;
+        }
+        .toc-grid a {
+            text-decoration: none;
+            color: #2563eb;
+            display: block;
+            padding: 4px 0;
+        }
+        .toc-grid a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .toc-grid {
+                columns: 1;
+            }
+        }
+
+        /* --- Code / Commands --- */
+        .command-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 18px 22px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin: 16px 0 22px 0;
+            border-left: 4px solid #3b82f6;
+            position: relative;
+        }
+        .command-block .prompt {
+            color: #94a3b8;
+            user-select: none;
+        }
+        .command-block .highlight {
+            color: #facc15;
+        }
+        .inline-code {
+            background: #eef2f6;
+            color: #b91c1c;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        /* --- Badges & Tags --- */
+        .badge {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            font-weight: 600;
+            font-size: 0.7rem;
+            padding: 2px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-right: 6px;
+        }
+        .badge.green {
+            background: #059669;
+        }
+        .badge.orange {
+            background: #d97706;
+        }
+        .badge.purple {
+            background: #7c3aed;
+        }
+
+        /* --- Method Cards --- */
+        .method-card {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            border: 1px solid #dde3ed;
+        }
+
+        /* --- Tables --- */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 0.9rem;
+        }
+        .styled-table th {
+            background: #1e293b;
+            color: white;
+            padding: 12px 16px;
+            text-align: left;
+        }
+        .styled-table td {
+            border: 1px solid #d1d9e6;
+            padding: 12px 16px;
+            background: white;
+        }
+        .styled-table tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 700px) {
+            .document-wrapper {
+                padding: 25px 20px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="document-wrapper">
+
+        <!-- ============== COVER / TITLE ============== -->
+        <h1>📡 Wifite for WPA/WPA2<br>Structured Notes</h1>
+        <div class="subtitle">
+            <span><strong>Automated Wi-Fi Auditing</strong> · PMKID &amp; Handshake Capture</span>
+            <span style="color:#64748b;">v1.0 &nbsp;|&nbsp; Quick Reference Guide</span>
+        </div>
+
+        <!-- Legal Disclaimer -->
+        <div class="legal-box">
+            <strong>⚖️ LEGAL DISCLAIMER:</strong> This guide is for <strong>educational and authorized security testing only</strong>. Unauthorized access to Wi-Fi networks is illegal. Use only on networks you own or have explicit written permission to test. The author assumes no liability for misuse.
+        </div>
+
+        <!-- ============== TABLE OF CONTENTS ============== -->
+        <div class="toc">
+            <h2>📑 Table of Contents</h2>
+            <div class="toc-grid">
+                <a href="#sec1">1. Objective</a>
+                <a href="#sec2">2. Primary Attack Vectors</a>
+                <a href="#sec3">3. Prerequisites</a>
+                <a href="#sec4">4. Installation</a>
+                <a href="#sec5">5. Core Command Structure</a>
+                <a href="#sec6">6. Command Flags &amp; Options</a>
+                <a href="#sec7">7. Step-by-Step Execution Workflow</a>
+                <a href="#sec8">8. Advanced Usage Scenarios</a>
+                <a href="#sec9">9. Troubleshooting Tips</a>
+                <a href="#sec10">10. Quick Reference (Cheat Sheet)</a>
+                <a href="#sec11">11. Important Legal Reminder</a>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SECTION 1                                     -->
+        <!-- ============================================ -->
+        <h2 id="sec1">1. Objective</h2>
+        <p>Automate the capture and cracking of WPA/WPA2 Wi-Fi passwords with minimal manual command entry.</p>
+
+        <!-- ============================================ -->
+        <!-- SECTION 2                                     -->
+        <!-- ============================================ -->
+        <h2 id="sec2">2. Primary Attack Vectors (WPA/WPA2)</h2>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Attack</th>
+                    <th>Description</th>
+                    <th>Client Required?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>PMKID Attack</strong></td>
+                    <td>Fetches the PMKID directly from the AP without deauthing.</td>
+                    <td><span class="badge green">❌ No</span> (Clientless)</td>
+                </tr>
+                <tr>
+                    <td><strong>Handshake Capture</strong></td>
+                    <td>Deauthenticates connected clients to force a 4-way handshake reconnection.</td>
+                    <td><span class="badge orange">✅ Yes</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Note:</strong> Wifite prioritizes the PMKID attack first (faster, quieter) and falls back to handshake capture if PMKID fails.</p>
+
+        <!-- ============================================ -->
+        <!-- SECTION 3                                     -->
+        <!-- ============================================ -->
+        <h2 id="sec3">3. Prerequisites</h2>
+        <ul>
+            <li><strong>OS:</strong> Kali Linux / Parrot OS (preferred).</li>
+            <li><strong>Hardware:</strong> Wi-Fi adapter supporting <strong>Monitor Mode</strong> &amp; <strong>Packet Injection</strong> (e.g., ALFA AWUS036ACH).</li>
+            <li><strong>Dependencies:</strong> <span class="inline-code">aircrack-ng</span>, <span class="inline-code">reaver</span>, <span class="inline-code">tshark</span>, <span class="inline-code">pyrit</span> (installed automatically with Wifite on Kali).</li>
+        </ul>
+
+        <!-- ============================================ -->
+        <!-- SECTION 4                                     -->
+        <!-- ============================================ -->
+        <h2 id="sec4">4. Installation</h2>
+        <p><em>(Pre-installed on Kali. Manual install if missing)</em></p>
+        <div class="command-block"><span class="prompt">$</span> sudo apt update<br><span class="prompt">$</span> sudo apt install wifite -y</div>
+
+        <!-- ============================================ -->
+        <!-- SECTION 5                                     -->
+        <!-- ============================================ -->
+        <h2 id="sec5">5. Core Command Structure</h2>
+        <p><strong>Base Command (Target WPA/WPA2 only):</strong></p>
+        <div class="command-block"><span class="prompt">$</span> sudo wifite --wpa</div>
+
+        <!-- ============================================ -->
+        <!-- SECTION 6                                     -->
+        <!-- ============================================ -->
+        <h2 id="sec6">6. Command Flags &amp; Options (Cheatsheet Table)</h2>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Flag</th>
+                    <th>Function</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="inline-code">--wpa</span></td>
+                    <td><strong>Target only WPA/WPA2 networks</strong> (ignores WEP/WPS).</td>
+                    <td><span class="inline-code">sudo wifite --wpa</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">-b &lt;BSSID&gt;</span></td>
+                    <td>Target a specific AP by MAC address.</td>
+                    <td><span class="inline-code">-b AA:BB:CC:DD:EE:FF</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">-e &lt;ESSID&gt;</span></td>
+                    <td>Target a specific AP by network name (SSID).</td>
+                    <td><span class="inline-code">-e "Home_Network"</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">--dict &lt;path&gt;</span></td>
+                    <td>Use a custom wordlist for cracking.</td>
+                    <td><span class="inline-code">--dict /usr/share/wordlists/rockyou.txt</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">--skip-crack</span></td>
+                    <td>Capture the handshake/PMKID only, do not crack.</td>
+                    <td><span class="inline-code">--skip-crack</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">--nodeauths</span></td>
+                    <td><strong>Passive mode</strong> – never deauth clients (PMKID only).</td>
+                    <td><span class="inline-code">--nodeauths</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">--kill</span></td>
+                    <td>Automatically stop interfering services (NetworkManager).</td>
+                    <td><span class="inline-code">--kill</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">--new-hs</span></td>
+                    <td>Ignore old handshakes; force a fresh capture.</td>
+                    <td><span class="inline-code">--new-hs</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">-wpat &lt;sec&gt;</span></td>
+                    <td>Set timeout for WPA attack (default: 500s).</td>
+                    <td><span class="inline-code">-wpat 300</span></td>
+                </tr>
+                <tr>
+                    <td><span class="inline-code">--dual-interface</span></td>
+                    <td>Use two Wi-Fi cards for faster scanning/capturing.</td>
+                    <td><span class="inline-code">--dual-interface</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- ============================================ -->
+        <!-- SECTION 7                                     -->
+        <!-- ============================================ -->
+        <h2 id="sec7">7. Step-by-Step Execution Workflow</h2>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Step</th>
+                    <th>Action</th>
+                    <th>Command</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1</strong></td>
+                    <td>Launch Wifite targeting WPA only.</td>
+                    <td><span class="inline-code">sudo wifite --wpa</span></td>
+                </tr>
+                <tr>
+                    <td><strong>2</strong></td>
+                    <td>Wait for scan – Wifite lists all visible WPA APs with numbers (e.g., <span class="inline-code">[1]</span>, <span class="inline-code">[2]</span>).</td>
+                    <td><em>(Automatic)</em></td>
+                </tr>
+                <tr>
+                    <td><strong>3</strong></td>
+                    <td>Select target(s) – Type the number(s) separated by commas (e.g., <span class="inline-code">1,3</span>).</td>
+                    <td><span class="inline-code">1</span></td>
+                </tr>
+                <tr>
+                    <td><strong>4</strong></td>
+                    <td>PMKID Attempt – Wifite tries to extract PMKID silently.</td>
+                    <td><em>(Automatic)</em></td>
+                </tr>
+                <tr>
+                    <td><strong>5</strong></td>
+                    <td>Handshake Attempt – If PMKID fails, Wifite deauths clients to capture handshake.</td>
+                    <td><em>(Automatic)</em></td>
+                </tr>
+                <tr>
+                    <td><strong>6</strong></td>
+                    <td>Cracking – Wifite automatically runs the hash against the default wordlist (or your custom one).</td>
+                    <td><em>(Automatic)</em></td>
+                </tr>
+                <tr>
+                    <td><strong>7</strong></td>
+                    <td>Result – Cracked password is displayed on screen and saved to a log file.</td>
+                    <td>View with <span class="inline-code">cat ~/handshakes/</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- ============================================ -->
+        <!-- SECTION 8                                     -->
+        <!-- ============================================ -->
+        <h2 id="sec8">8. Advanced Usage Scenarios</h2>
+
+        <div class="method-card">
+            <h3>Scenario A: Target Specific Router (BSSID) with Custom Wordlist</h3>
+            <div class="command-block"><span class="prompt">$</span> sudo wifite --wpa -b 11:22:33:44:55:66 --dict /usr/share/wordlists/rockyou.txt --kill</div>
+        </div>
+
+        <div class="method-card">
+            <h3>Scenario B: Passive Capturing (No Deauth – Quiet/Stealth Mode)</h3>
+            <div class="command-block"><span class="prompt">$</span> sudo wifite --wpa --nodeauths</div>
+        </div>
+
+        <div class="method-card">
+            <h3>Scenario C: Capture Only (Crack Later on a GPU Machine)</h3>
+            <div class="command-block"><span class="prompt">$</span> sudo wifite --wpa -b 11:22:33:44:55:66 --skip-crack</div>
+            <p><em>The captured <span class="inline-code">.cap</span> or <span class="inline-code">.hccapx</span> file is saved in <span class="inline-code">~/handshakes/</span> for later use.</em></p>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SECTION 9                                     -->
+        <!-- ============================================ -->
+        <h2 id="sec9">9. Troubleshooting Tips</h2>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Problem</th>
+                    <th>Solution</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>"No targets found"</strong></td>
+                    <td>Ensure the adapter is plugged in and recognized (<span class="inline-code">iwconfig</span>). Move closer to the AP.</td>
+                </tr>
+                <tr>
+                    <td><strong>Interface errors</strong></td>
+                    <td>Use the <span class="inline-code">--kill</span> flag to stop conflicting services.</td>
+                </tr>
+                <tr>
+                    <td><strong>Handshake not capturing</strong></td>
+                    <td>Increase attack time using <span class="inline-code">-wpat 600</span> (10 minutes). Ensure clients are connected.</td>
+                </tr>
+                <tr>
+                    <td><strong>Hashcat "No device found"</strong></td>
+                    <td>VM lacks GPU passthrough. Copy the captured hash to a physical Windows/Linux machine for cracking.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- ============================================ -->
+        <!-- SECTION 10                                    -->
+        <!-- ============================================ -->
+        <h2 id="sec10">10. Quick Reference (Cheat Sheet)</h2>
+
+        <div class="method-card">
+            <p><strong>Basic WPA only scan</strong></p>
+            <div class="command-block"><span class="prompt">$</span> sudo wifite --wpa</div>
+        </div>
+
+        <div class="method-card">
+            <p><strong>Targeted attack with custom wordlist &amp; kill</strong></p>
+            <div class="command-block"><span class="prompt">$</span> sudo wifite --wpa -b AA:BB:CC:DD:EE:FF --dict /path/to/rockyou.txt --kill</div>
+        </div>
+
+        <div class="method-card">
+            <p><strong>Passive PMKID only (no client interference)</strong></p>
+            <div class="command-block"><span class="prompt">$</span> sudo wifite --wpa --nodeauths</div>
+        </div>
+
+        <div class="method-card">
+            <p><strong>Capture handshake only (skip cracking)</strong></p>
+            <div class="command-block"><span class="prompt">$</span> sudo wifite --wpa -b AA:BB:CC:DD:EE:FF --skip-crack</div>
+        </div>
+
+        <div class="method-card">
+            <p><strong>Using dual interfaces for speed</strong></p>
+            <div class="command-block"><span class="prompt">$</span> sudo wifite --wpa --dual-interface</div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SECTION 11                                    -->
+        <!-- ============================================ -->
+        <h2 id="sec11">11. Important Legal Reminder</h2>
+        <div class="legal-box" style="background: #fefce8; border-left-color: #d97706;">
+            <strong>⚠️ REMINDER:</strong> Use these tools <strong>only on networks you own or have explicit written permission to test</strong>. Unauthorized access is illegal under laws like the Computer Fraud and Abuse Act (CFAA) and equivalent international statutes. This guide is provided for defensive security education.
+        </div>
+
+        <!-- Footer -->
+        <p style="text-align: right; margin-top: 40px; color: #64748b; font-size: 0.85rem; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+            <strong>End of Structured Notes</strong> · For educational purposes only.
+        </p>
+
+    </div>
+
+</body>
+</html>
